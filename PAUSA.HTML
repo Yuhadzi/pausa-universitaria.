@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pausa Universitaria</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* Generali */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: linear-gradient(135deg, #e3f2fd, #ffffff);
+      font-family: 'Outfit', sans-serif;
+      color: #333;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    h1 {
+      font-size: 3.5rem;
+      color: #333;
+      margin-bottom: 40px;
+      letter-spacing: 1px;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+      animation: fadeIn 1s ease forwards;
+    }
+
+    /* Triangolo */
+    .triangle-container {
+      position: relative;
+      width: 300px;
+      height: 260px;
+      margin-bottom: 50px;
+      clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+      background: rgba(255, 255, 255, 0.8);
+      border: 4px solid #333;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(4px);
+      overflow: hidden;
+      transition: transform 0.3s ease;
+    }
+
+    .triangle-container:hover {
+      transform: scale(1.05);
+    }
+
+    .fill {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 0;
+      background: linear-gradient(to top, #43e97b, #38f9d7);
+      box-shadow: 0 0 20px rgba(67, 233, 123, 0.4);
+      transition: height 0.4s ease;
+    }
+
+    /* Bottone */
+    button {
+      padding: 18px 60px;
+      font-size: 22px;
+      font-weight: bold;
+      background: linear-gradient(to right, #00b09b, #96c93d);
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    button::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.2);
+      transition: left 0.5s ease;
+    }
+
+    button:hover::after {
+      left: 100%;
+    }
+
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    #message {
+      margin-top: 50px;
+      font-size: 4.5rem;
+      color: #ff4081;
+      font-weight: 700;
+      display: none;
+      text-shadow: 0 0 10px rgba(255, 64, 129, 0.6);
+      animation: popIn 1s ease forwards;
+    }
+
+    @keyframes popIn {
+      0% {
+        transform: scale(0.3);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Particelle decorative */
+    .particle {
+      position: absolute;
+      background-color: rgba(0, 0, 0, 0.1);
+      border-radius: 50%;
+      pointer-events: none;
+      animation: floatUp 10s infinite ease-in;
+      opacity: 0.2;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 0.2;
+      }
+      50% {
+        opacity: 0.5;
+      }
+      100% {
+        transform: translateY(-100vh) scale(0.5);
+        opacity: 0;
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2.2rem;
+      }
+
+      .triangle-container {
+        width: 200px;
+        height: 173px;
+      }
+
+      button {
+        font-size: 18px;
+        padding: 15px 40px;
+      }
+
+      #message {
+        font-size: 3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Particelle di sfondo -->
+  <div class="particle" style="width: 10px; height: 10px; left: 20%; animation-delay: 0s;"></div>
+  <div class="particle" style="width: 15px; height: 15px; left: 40%; animation-delay: 2s;"></div>
+  <div class="particle" style="width: 8px; height: 8px; left: 60%; animation-delay: 4s;"></div>
+  <div class="particle" style="width: 12px; height: 12px; left: 80%; animation-delay: 6s;"></div>
+
+  <h1><span style="color:#00b09b;">Pausa</span> Universitaria</h1>
+
+  <!-- Triangolo -->
+  <div class="triangle-container">
+    <div class="fill" id="fill"></div>
+  </div>
+
+  <!-- Bottone -->
+  <button onclick="riempiTriangolo()">Premi qui!</button>
+
+  <!-- Messaggio -->
+  <div id="message">È l'ora della pausa! 🎉</div>
+
+  <script>
+    let clickCount = 0;
+    const maxClicks = 30;
+
+    function riempiTriangolo() {
+      if (clickCount >= maxClicks) return;
+
+      clickCount++;
+
+      const fill = document.getElementById('fill');
+      const maxHeight = 260; // altezza massima del triangolo
+      const nuovaAltezza = (clickCount / maxClicks) * maxHeight;
+
+      fill.style.height = nuovaAltezza + 'px';
+
+      if (clickCount === maxClicks) {
+        const message = document.getElementById('message');
+        message.style.display = 'block';
+        message.style.animation = 'popIn 1s ease forwards';
+      }
+    }
+  </script>
+
+</body>
+</html>
